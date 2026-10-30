@@ -36,7 +36,7 @@
       const cx=mobile?w/2+.025*h-p*.03*h:w*.70-p*.075*h,cy=mobile?h*.75:h*.515;
       ctx.drawImage(sphere,cx-radius,cy-radius,radius*2,radius*2);
     }
-    const texture=new Image();texture.onload=()=>{const t=document.createElement('canvas');t.width=2048;t.height=1024;const tc=t.getContext('2d');tc.drawImage(texture,0,0,2048,1024);pixels=tc.getImageData(0,0,2048,1024).data;draw(scrollY);view.parentElement.classList.add('moon-ready');};texture.src='assets/lunar-surface.jpg';
+    const texture=new Image();texture.onload=()=>{const t=document.createElement('canvas');t.width=2048;t.height=1024;const tc=t.getContext('2d');tc.drawImage(texture,0,0,2048,1024);pixels=tc.getImageData(0,0,2048,1024).data;draw(scrollY);view.parentElement.classList.add('moon-ready');};texture.src='assets/lunar-surface.jpg?v=3';
     window.addEventListener('muon:motion',e=>draw(e.detail.scroll));window.addEventListener('resize',()=>draw(requested),{passive:true});
   }
 
@@ -82,7 +82,7 @@
   const pos=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
   const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
   const uResolution=gl.getUniformLocation(program,'resolution'),uRotation=gl.getUniformLocation(program,'rotation'),uProgress=gl.getUniformLocation(program,'progress');
-  let ready=false,last=-1;const image=new Image();image.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);ready=true;canvas.parentElement.classList.add('moon-ready');draw(matchMedia('(prefers-reduced-motion: reduce)').matches?0:window.scrollY);};image.src='assets/lunar-surface.jpg';
+  let ready=false,last=-1;const image=new Image();image.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);ready=true;canvas.parentElement.classList.add('moon-ready');draw(matchMedia('(prefers-reduced-motion: reduce)').matches?0:window.scrollY);};image.src='assets/lunar-surface.jpg?v=3';
   function size(){const dpr=Math.min(window.devicePixelRatio||1,1.5),w=Math.round(innerWidth*dpr),h=Math.round(innerHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);last=-1;}}
   function draw(scroll){if(!ready)return;size();if(Math.abs(scroll-last)<.05)return;last=scroll;gl.uniform2f(uResolution,canvas.width,canvas.height);gl.uniform1f(uRotation,.4+scroll*.0012);gl.uniform1f(uProgress,scroll/innerHeight);gl.drawArrays(gl.TRIANGLES,0,6);}
   window.addEventListener('muon:motion',event=>draw(event.detail.scroll));
