@@ -26,9 +26,9 @@
       const rot=.4+scroll*.0012,shift=rot/(2*Math.PI)*2048,d=frame.data;
       for(let i=0;i<us.length;i++){if(!edges[i])continue;const tx=((Math.floor(us[i]*2048+shift)%2048)+2048)%2048,ty=vs[i],idx=(ty*2048+tx)*4,h=pixels[idx]/255;
         const left=pixels[(ty*2048+(tx+2047)%2048)*4]/255,right=pixels[(ty*2048+(tx+1)%2048)*4]/255;
-        const relief=(left-right)*1.9;const diffuse=Math.max(0,lights[i]+relief);
-        const light=.016+diffuse*.98,base=(.22+h*.78)*light;const k=i*4;
-        d[k]=Math.min(255,(.38+.45*h)*base*255);d[k+1]=Math.min(255,(.40+.43*h)*base*255);d[k+2]=Math.min(255,(.42+.37*h)*base*255);d[k+3]=edges[i];
+        const relief=(left-right)*.65;const diffuse=Math.max(0,lights[i]+relief);
+        const light=.035+diffuse*.98,base=(.38+h*.62)*light;const k=i*4;
+        d[k]=Math.min(255,(.46+.42*h)*base*255);d[k+1]=Math.min(255,(.49+.42*h)*base*255);d[k+2]=Math.min(255,(.54+.42*h)*base*255);d[k+3]=edges[i];
       }
       out.putImageData(frame,0,0);const ratio=Math.min(devicePixelRatio||1,1.25),w=Math.round(innerWidth*ratio),h=Math.round(innerHeight*ratio);
       if(view.width!==w||view.height!==h){view.width=w;view.height=h;}ctx.clearRect(0,0,w,h);
@@ -62,15 +62,15 @@
     vec3 tangent=normalize(cross(local,vec3(0.,1.,.01)));vec3 bitangent=cross(local,tangent);
     float a=heightAt(local+tangent*.0025)-heightAt(local-tangent*.0025);
     float b=heightAt(local+bitangent*.0025)-heightAt(local-bitangent*.0025);
-    vec3 bump=normalize(local-tangent*a*2.5-bitangent*b*2.5);
+    vec3 bump=normalize(local-tangent*a*.8-bitangent*b*.8);
     vec3 light=r*normalize(vec3(1.5,.8,.85));
     float diffuse=max(0.,dot(bump,light));
     float terminator=smoothstep(-.09,.22,dot(local,light));
-    float albedo=.22+h*.78;
-    vec3 stone=mix(vec3(.38,.40,.42),vec3(.83,.83,.79),h);
-    vec3 color=stone*albedo*(.018+diffuse*.98)*terminator;
+    float albedo=.38+h*.62;
+    vec3 stone=mix(vec3(.46,.49,.54),vec3(.88,.91,.96),h);
+    vec3 color=stone*albedo*(.035+diffuse*.98)*terminator;
     color+=stone*.006;
-    float fresnel=pow(1.-n.z,5.);color+=vec3(.22,.28,.12)*fresnel*.08;
+    float fresnel=pow(1.-n.z,5.);color+=vec3(.28,.37,.50)*fresnel*.18;
     float edge=1.-smoothstep(.994,1.,rr);
     gl_FragColor=vec4(color,edge);
   }`;

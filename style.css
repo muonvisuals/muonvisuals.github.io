@@ -10,3 +10,5 @@
 
 /* Keep the scroll-driven moon present behind the dark chapters. */
 .expertise,.process{background:#080a0c88}.studio{background:#101518bb}
+/* Silver lunar material and a restrained orbital accent. */
+.lunar-orbit{position:absolute;left:43%;top:14%;width:69vh;height:75vh;border:1px solid #c7ff003b;border-radius:50%;transform:rotate(-28deg) rotateX(65deg) scaleX(1.4);box-shadow:0 0 14px #c7ff0008;animation:lunarOrbit 32s linear infinite}.lunar-orbit i{position:absolute;left:16%;top:12%;width:5px;height:5px;border-radius:50%;background:#c7ff00;box-shadow:0 0 15px #c7ff0077}.moon-world canvas{z-index:1}.moon-vignette{z-index:2}@keyframes lunarOrbit{to{transform:rotate(-28deg) rotateX(65deg) scaleX(1.4) rotateZ(360deg)}}@media(max-width:760px){.lunar-orbit{left:8%;top:51%;width:85vw;height:90vw}}@media(prefers-reduced-motion:reduce){.lunar-orbit{animation:none}}
