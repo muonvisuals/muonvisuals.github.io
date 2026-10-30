@@ -1,0 +1,5 @@
+Lunar texture: three.js examples, moon_1024.jpg
+Source: https://threejs.org/examples/textures/planets/moon_1024.jpg
+Photographic lunar surface map replaces the previous procedural texture.
+Brand lettering: original MUON VISUALS artwork supplied by the owners.
+The opening clips the supplied artwork into letters and retains the custom O.

@@ -2,7 +2,6 @@
 document.getElementById('year').textContent=new Date().getFullYear();
 const services=document.querySelectorAll('.services details');
 services.forEach(item=>item.addEventListener('toggle',()=>{if(item.open)services.forEach(other=>{if(other!==item)other.open=false;});}));
-document.querySelectorAll('.wordmark').forEach(brand=>{brand.classList.add('brand-depth');const face=brand.querySelector('svg');if(face){face.classList.add('brand-face');const shine=face.cloneNode(true);shine.classList.add('brand-shine');shine.setAttribute('aria-hidden','true');shine.removeAttribute('role');shine.removeAttribute('aria-label');brand.appendChild(shine);}});
 const dialog=document.getElementById('quote-dialog');let quoteOpener=null;
 document.querySelectorAll('.quote-trigger').forEach(button=>button.addEventListener('click',()=>{quoteOpener=button;dialog.showModal();document.documentElement.classList.add('dialog-open');}));
 dialog.querySelector('.quote-close').addEventListener('click',()=>dialog.close());
@@ -19,4 +18,3 @@ function frame(time){raf=0;const dt=Math.min(64,time-(lastTime||time-16));lastTi
 window.addEventListener('scroll',wake,{passive:true});window.addEventListener('resize',measure,{passive:true});window.addEventListener('load',measure);reducedMotion.addEventListener('change',()=>{smoothY=scrollY;measure();});measure();
 const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target);}}),{threshold:.12});
 document.querySelectorAll('.section-heading,.services details,.studio-layout>div:last-child,.steps article,.contact h2,.contact .button,.section-label').forEach((node,i)=>{node.classList.add('reveal');node.style.setProperty('--reveal-delay',`${(i%3)*65}ms`);revealObserver.observe(node);});
-if(matchMedia('(hover: hover) and (pointer: fine)').matches&&!reducedMotion.matches){const brand=document.querySelector('.nav .wordmark');brand.addEventListener('pointermove',e=>{const r=brand.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;brand.style.setProperty('--brand-x',`${-y*12}deg`);brand.style.setProperty('--brand-y',`${x*18}deg`);});brand.addEventListener('pointerleave',()=>{brand.style.setProperty('--brand-x','0deg');brand.style.setProperty('--brand-y','0deg');});}
