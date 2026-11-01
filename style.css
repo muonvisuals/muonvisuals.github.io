@@ -67,3 +67,21 @@ html,body{max-width:100%;overflow-x:clip}button,a,input,summary{touch-action:man
 .nav.on-light .wordmark{filter:none}.nav.on-light .wordmark svg>rect{fill:#0b0d0f}.nav.on-light nav>a{color:#0b0d0f;text-shadow:none}.nav.on-light .nav-contact{background:#080a0c;color:#f5f5ee}.nav.on-light{background:linear-gradient(#f5f5eeed,#f5f5ee00)}
 
 .nav.on-light{background:#f5f5eeed;backdrop-filter:blur(12px)}
+
+/* Dark enquiry surface and a transform-based border runner on every browser. */
+.contact{background:#080a0c;color:#f5f5ee}.contact em{color:#c7ff00}.contact .section-label{border-color:#ffffff26;color:#969a9e}.contact .enquiry-heading>p:last-child{color:#969e94}
+.contact #quote-form label,.contact #quote-form legend{color:#f5f5ee}
+.contact #quote-form input:not([type=checkbox]):not([type=radio]),.contact textarea{color:#f5f5ee;border-bottom-color:#ffffff35}
+.contact #quote-form input:focus,.contact textarea:focus{border-color:#c7ff00;box-shadow:0 1px 0 #c7ff00}
+.contact #quote-form input::placeholder,.contact textarea::placeholder{color:#7f897e}#quote-hint,.contact .question-hint,.contact .form-note,.contact .email{color:#929d8e}
+.contact .choice span{border-color:#ffffff38}.contact .choice:hover span{border-color:#c7ff0088}.contact .choice input:checked+span{background:#c7ff0018;color:#c7ff00;border-color:#c7ff00;box-shadow:none}.contact .choice input:focus-visible+span{outline-color:#c7ff00}
+.contact .form-status{color:#c7ff00}.contact .form-status[data-state=error],.contact .choice-error{color:#ffb8a4}
+#quote-start{scroll-margin-top:125px;outline:none}
+.contact .submit-quote{background:#020303;border-color:#f5f5ee40;overflow:hidden;isolation:isolate;position:relative}
+.contact .submit-quote::before{display:none}.submit-quote>span{position:relative;z-index:2}
+.submit-quote .border-runner{display:block;position:absolute;z-index:-2;left:50%;top:50%;width:240px;height:240px;margin:-120px 0 0 -120px;background:conic-gradient(transparent 0deg,transparent 230deg,#f5f5ee99 270deg,#c7ff00 315deg,transparent 345deg);animation:quoteBorderSpin 4s linear infinite;transform-origin:center;pointer-events:none}
+.submit-quote::after{content:'';position:absolute;inset:1px;border-radius:1px;background:#020303;z-index:-1;pointer-events:none}.contact .submit-quote:hover::after{background:#11170d}.submit-quote:disabled{cursor:wait;opacity:.7}
+@keyframes quoteBorderSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.submit-quote .border-runner{animation:none;transform:rotate(40deg)}}
+
+.contact #quote-form{min-height:calc(100svh - 100px)}
