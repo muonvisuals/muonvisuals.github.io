@@ -46,3 +46,8 @@ html,body{max-width:100%;overflow-x:clip}button,a,input,summary{touch-action:man
  .card-art{height:36svh}.card-caption{margin-top:12px}.card-description{margin-top:8px}
  .world-bottom{bottom:16px}.intro-tagline{top:calc(50% + 90px)}
 }
+
+/* Explicit layer promotion keeps the same live 3D artwork on touch GPUs. */
+.sculpture.live-art,.glass-screen.live-art,.particle-ring.live-art{animation:none;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.sculpture,.sculpture span{-webkit-transform-style:preserve-3d;transform-style:preserve-3d}
+.card-art{-webkit-perspective:1100px;perspective:1100px}

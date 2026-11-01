@@ -18,3 +18,44 @@ function frame(time){raf=0;const dt=Math.min(64,time-(lastTime||time-16));lastTi
 window.addEventListener('scroll',wake,{passive:true});window.addEventListener('resize',measure,{passive:true});window.addEventListener('load',measure);reducedMotion.addEventListener('change',()=>{smoothY=scrollY;measure();});measure();
 const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target);}}),{threshold:.12});
 document.querySelectorAll('.section-heading,.services details,.studio-layout>div:last-child,.steps article,.contact h2,.contact .button,.section-label').forEach((node,i)=>{node.classList.add('reveal');node.style.setProperty('--reveal-delay',`${(i%3)*65}ms`);revealObserver.observe(node);});
+
+// Shared live artwork renderer for desktop and touch browsers. Motion is also
+// tied to native scroll, so the artwork responds during a finger gesture.
+(() => {
+  const cards=[...document.querySelectorAll('.card-art')];
+  const live=new Set();let request=0,last=0,clock=0;
+  const sculpture=document.querySelector('.sculpture');
+  const screen=document.querySelector('.glass-screen');
+  const ringA=document.querySelector('.ring-a'),ringB=document.querySelector('.ring-b');
+  const core=document.querySelector('.particle-core');
+  const animated=[sculpture,screen,ringA,ringB];
+  animated.forEach(el=>el.classList.add('live-art'));
+  function wakeArt(){if(!request&&!document.hidden&&!reducedMotion.matches&&live.size)request=requestAnimationFrame(render);}
+  function render(time){
+    request=0;if(document.hidden||reducedMotion.matches||!live.size){last=0;return;}
+    clock+=last?Math.min(time-last,50):16;last=time;
+    const phase=clock/1000,scroll=window.scrollY;
+    if(live.has(cards[0])){
+      const angle=phase*.62+scroll*.002;
+      sculpture.style.transform=`rotateX(${51+Math.sin(angle)*10}deg) rotateY(${Math.sin(angle*.7)*12}deg) rotateZ(${-22+Math.sin(angle*.8)*32}deg)`;
+      sculpture.querySelectorAll('span').forEach((ring,i)=>ring.style.transform=`translateZ(${i*35+Math.sin(angle-i*.5)*7}px)`);
+    }
+    if(live.has(cards[1])){
+      const angle=phase*.75+scroll*.002;
+      screen.style.transform=`translate3d(0,${Math.sin(angle)*10}px,0) rotateY(${-17+Math.sin(angle)*11}deg) rotateX(${9+Math.cos(angle*.8)*7}deg) rotateZ(${-5+Math.sin(angle*.7)*4}deg)`;
+    }
+    if(live.has(cards[2])){
+      const turn=phase*24+scroll*.035;
+      ringA.style.transform=`rotateX(66deg) rotateZ(${-20+turn}deg)`;
+      ringB.style.transform=`rotateY(65deg) rotateZ(${30-turn*.73}deg)`;
+      core.style.transform=`scale(${1+Math.sin(phase*1.4)*.045})`;
+    }
+    wakeArt();
+  }
+  const observer=new IntersectionObserver(entries=>{entries.forEach(e=>e.isIntersecting?live.add(e.target):live.delete(e.target));if(!live.size){cancelAnimationFrame(request);request=0;last=0;}wakeArt();},{threshold:.01});
+  cards.forEach(card=>observer.observe(card));
+  window.addEventListener('scroll',wakeArt,{passive:true});
+  document.addEventListener('visibilitychange',()=>{last=0;wakeArt();});
+  window.addEventListener('pageshow',wakeArt);
+  reducedMotion.addEventListener('change',()=>{animated.forEach(el=>el.style.removeProperty('transform'));core.style.removeProperty('transform');last=0;wakeArt();});
+})();
