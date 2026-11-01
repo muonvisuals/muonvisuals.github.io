@@ -3,12 +3,12 @@
   'use strict';
   const root=document.documentElement,scene=document.getElementById('brand-intro'),stage=scene.querySelector('.intro-logo-stage'),visuals=scene.querySelector('.intro-visuals'),letters=[...scene.querySelectorAll('.intro-letter')],dot=scene.querySelector('.intro-dot'),skip=scene.querySelector('.intro-skip'),header=document.querySelector('.nav .wordmark');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  let animations=[],token=0,active=false,raf=0,oldFocus=null;
+  let animations=[],token=0,active=false,raf=0,introWidth=innerWidth;
   function moon(progress){window.dispatchEvent(new CustomEvent('muon:intro',{detail:{progress}}));}
   function finish(){token++;active=false;cancelAnimationFrame(raf);animations.forEach(a=>a.cancel());animations=[];root.classList.remove('intro-running','intro-docking');root.classList.add('intro-complete');scene.inert=true;scene.setAttribute('aria-hidden','true');document.querySelector('main').inert=false;document.querySelector('.nav').inert=false;document.querySelector('footer').inert=false;moon(1);document.querySelector("main").setAttribute("tabindex","-1");document.querySelector("main").focus({preventScroll:true});}
   function animate(el,frames,options){const animation=el.animate(frames,{fill:'both',...options});animations.push(animation);return animation;}
   async function play(){
-    const mine=++token;active=true;oldFocus=document.activeElement;
+    const mine=++token;active=true;introWidth=innerWidth;
     animations.forEach(a=>a.cancel());animations=[];cancelAnimationFrame(raf);
     root.classList.remove('intro-complete','intro-docking');root.classList.add('intro-running');scene.inert=false;scene.removeAttribute('aria-hidden');document.querySelector('main').inert=true;document.querySelector('.nav').inert=true;document.querySelector('footer').inert=true;
     stage.removeAttribute('style');moon(0);window.scrollTo({top:0,left:0,behavior:'instant'});skip.focus({preventScroll:true});
@@ -45,7 +45,7 @@
   skip.addEventListener('click',finish);
   document.addEventListener('keydown',e=>{if(!active)return;if(e.key==='Escape'){e.preventDefault();finish();}else if(e.key==='Tab'){e.preventDefault();skip.focus();}});
   document.querySelector('.intro-replay').addEventListener('click',play);
-  window.addEventListener('resize',()=>{if(active)finish();},{passive:true});
+  window.addEventListener('resize',()=>{if(active&&Math.abs(innerWidth-introWidth)>50)finish();},{passive:true});
   window.addEventListener('pagehide',()=>{if(active)finish();});
   reduced.addEventListener('change',()=>{if(reduced.matches&&active)finish();});
   // Animation failure can never leave the public site locked.
