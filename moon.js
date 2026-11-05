@@ -4,7 +4,8 @@
   'use strict';
   const canvas = document.getElementById('moon-canvas');
   let introPhase=document.documentElement.classList.contains('intro-running')?0:1;
-  window.addEventListener('muon:intro',event=>{introPhase=event.detail.progress;window.dispatchEvent(new CustomEvent('muon:motion',{detail:{scroll:window.scrollY,force:true}}));});
+  let illumination = introPhase;
+  window.addEventListener('muon:intro',event=>{introPhase=event.detail.progress;illumination=event.detail.illumination??1;window.dispatchEvent(new CustomEvent('muon:motion',{detail:{scroll:window.scrollY,force:true}}));});
   const gl = canvas.getContext('webgl', {alpha:true, antialias:false, powerPreference:'low-power'});
   if (!gl) { softwareMoon(); return; }
 
@@ -28,7 +29,7 @@
       const rot=1.05+scroll*.00065,shift=rot/(2*Math.PI)*2048,d=frame.data;
       for(let i=0;i<us.length;i++){if(!edges[i])continue;const tx=((Math.floor(us[i]*2048+shift)%2048)+2048)%2048,ty=vs[i],idx=(ty*2048+tx)*4,h=pixels[idx]/255;
         const left=pixels[(ty*2048+(tx+2047)%2048)*4]/255,right=pixels[(ty*2048+(tx+1)%2048)*4]/255;
-        const relief=(left-right)*.18;const diffuse=lights[i]>0?Math.max(0,lights[i]+relief):0;
+        const relief=(left-right)*.18;const qy=Math.sin((ty/1023-.5)*Math.PI),z=Math.sqrt(Math.max(0,1-nx[i]*nx[i]-qy*qy)),lz=-2.8+2.38*illumination;const diffuse=Math.max(0,(nx[i]+qy*.27+z*lz)/Math.hypot(1,.27,lz)+relief);
         const light=.009+diffuse*2.3,base=(.18+h*.82)*light;const k=i*4;
         d[k]=Math.min(255,(.72+.28*h)*base*255);d[k+1]=Math.min(255,(.73+.27*h)*base*255);d[k+2]=Math.min(255,(.74+.26*h)*base*255);d[k+3]=edges[i];
       }
@@ -45,7 +46,7 @@
 
   const vertex = `attribute vec2 position;varying vec2 screen;void main(){screen=position;gl_Position=vec4(position,0.,1.);}`;
   const fragment = `precision highp float;
-  varying vec2 screen;uniform vec2 resolution;uniform float rotation;uniform float progress;uniform float intro;uniform sampler2D surface;
+  varying vec2 screen;uniform vec2 resolution;uniform float rotation;uniform float progress;uniform float intro;uniform float illumination;uniform sampler2D surface;
   const float PI=3.14159265359;
   vec2 uvAt(vec3 p){return vec2(atan(p.z,p.x)/(2.*PI)+.5,asin(clamp(p.y,-1.,1.))/PI+.5);}
   mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}
@@ -67,7 +68,7 @@
     float a=heightAt(local+tangent*.0025)-heightAt(local-tangent*.0025);
     float b=heightAt(local+bitangent*.0025)-heightAt(local-bitangent*.0025);
     vec3 bump=normalize(local-tangent*a*.22-bitangent*b*.22);
-    vec3 light=r*normalize(vec3(1.,.27,-.42));
+    vec3 light=r*normalize(vec3(1.,.27,mix(-2.8,-.42,illumination)));
     float diffuse=max(0.,dot(bump,light));
     float terminator=smoothstep(-.09,.22,dot(local,light));
     float albedo=.18+h*.82;
@@ -85,12 +86,13 @@
   const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
   const pos=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
   const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-  const uIntro=gl.getUniformLocation(program,'intro');
+  const uIntro=gl.getUniformLocation(program,'intro'),uIllumination=gl.getUniformLocation(program,'illumination');
   const uResolution=gl.getUniformLocation(program,'resolution'),uRotation=gl.getUniformLocation(program,'rotation'),uProgress=gl.getUniformLocation(program,'progress');
-  let ready=false,last=-1,lastPhase=-1;const image=new Image();image.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);ready=true;canvas.parentElement.classList.add('moon-ready');draw(matchMedia('(prefers-reduced-motion: reduce)').matches?0:window.scrollY);};image.src='assets/moon-photographic.jpg?v=4';
+  let ready=false,last=-1,lastPhase=-1,lastLight=-1;const image=new Image();image.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);ready=true;canvas.parentElement.classList.add('moon-ready');draw(matchMedia('(prefers-reduced-motion: reduce)').matches?0:window.scrollY);};image.src='assets/moon-photographic.jpg?v=4';
   function size(){const dpr=Math.min(window.devicePixelRatio||1,1.5),w=Math.round(innerWidth*dpr),h=Math.round(innerHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);last=-1;}}
-  function draw(scroll){if(!ready)return;size();if(Math.abs(scroll-last)<.05&&Math.abs(introPhase-lastPhase)<.0001)return;last=scroll;lastPhase=introPhase;gl.uniform1f(uIntro,introPhase);gl.uniform2f(uResolution,canvas.width,canvas.height);gl.uniform1f(uRotation,1.05+scroll*.00065);gl.uniform1f(uProgress,scroll/innerHeight);gl.drawArrays(gl.TRIANGLES,0,6);}
+  function draw(scroll){if(!ready)return;size();if(Math.abs(scroll-last)<.05&&Math.abs(introPhase-lastPhase)<.0001&&Math.abs(illumination-lastLight)<.0001)return;last=scroll;lastPhase=introPhase;lastLight=illumination;gl.uniform1f(uIllumination,illumination);gl.uniform1f(uIntro,introPhase);gl.uniform2f(uResolution,canvas.width,canvas.height);gl.uniform1f(uRotation,1.05+scroll*.00065);gl.uniform1f(uProgress,scroll/innerHeight);gl.drawArrays(gl.TRIANGLES,0,6);}
   window.addEventListener('muon:motion',event=>draw(event.detail.scroll));
   window.addEventListener('resize',()=>{last=-1;draw(window.scrollY);},{passive:true});
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();ready=false;canvas.parentElement.classList.remove('moon-ready');});
 })();
+
