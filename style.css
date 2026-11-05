@@ -122,3 +122,60 @@ html,body{max-width:100%;overflow-x:clip}button,a,input,summary{touch-action:man
  .hero .intro{max-width:290px;margin-top:23px;margin-bottom:28px}
 }
 @media(prefers-reduced-motion:reduce){.hero-copy>*{animation:none!important}}
+
+/* Compact orbital gallery. Native vertical scrolling drives one unbroken pass. */
+.world-section{--orbit-card:clamp(270px,29vw,390px);height:180svh;background:transparent}
+.world-pin{height:100svh;min-height:600px;padding:120px 0 80px;display:flex;flex-direction:column;background:linear-gradient(90deg,#080a0c55,transparent 65%)}
+.world-heading{margin:0 7% 24px;flex:none}
+.world-heading .eyebrow{font-size:8px;letter-spacing:1.7px}
+.world-window{width:calc(var(--orbit-card) + 48px);margin:auto 0 auto 7%;padding:24px 0 28px;overflow:hidden;mask-image:linear-gradient(90deg,#000 0%,#000 88%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 88%,transparent 100%)}
+.world-track{display:flex;flex-direction:row;gap:72px;width:max-content;padding:0;will-change:transform}
+.world-card{width:var(--orbit-card);max-width:none;flex:none;transform-origin:50% 50%;will-change:transform}
+.card-art{height:clamp(170px,24svh,245px);min-height:0;max-height:none;border:0;background:transparent;overflow:hidden}
+.design-art,.tech-art,.ai-art{background:transparent}
+.card-caption{margin-top:18px;gap:12px}
+.card-caption h2{font-size:clamp(23px,2.15vw,30px);letter-spacing:-1px;line-height:1.2}
+.card-caption p{font-size:8px;letter-spacing:1.8px;margin-bottom:10px}
+.card-arrow{font-size:23px}.card-description{font-size:11px;max-width:32ch;margin-top:14px;line-height:1.8;color:#b3bbb3}
+.world-bottom{bottom:32px;font-size:7px;letter-spacing:1.4px}.world-progress{max-width:180px}
+.world-bottom>span:last-child{display:block}
+.world-section .sculpture{inset:20% 26%}
+.world-section .sculpture span{border-width:12px}
+.world-section .sculpture span:nth-child(5){border-width:8px}
+.world-section .glass-screen{left:20%;right:20%;top:16%;bottom:18%;padding:10px;border-radius:6px;backdrop-filter:none;box-shadow:3px 4px 0 #1c3154,6px 10px 25px #0005}
+.world-section .screen-bar{padding-bottom:8px}.world-section .screen-layout{padding:6px;height:68%}
+.world-section .screen-lines b{height:3px;margin:8px 0}.world-section .glass-screen>span{font-size:5px;letter-spacing:1.4px}
+.world-section .particle-core{width:66px;box-shadow:0 0 50px #c7ff0014}
+.world-section .particle-ring{width:52%;height:72%}
+.world-section .art-grid,.world-section .particle-dots{opacity:.4}
+@media(max-width:760px){
+ .world-section{--orbit-card:min(72vw,310px);height:180svh;background:transparent}
+ .world-pin{height:100svh;min-height:560px;padding:104px 0 70px}
+ .world-heading{margin:0 7% 16px}.world-heading .eyebrow{font-size:7px;max-width:220px}
+ .world-counter{display:block;font-size:9px;white-space:nowrap}
+ .world-window{width:86vw;margin:0 0 auto 7%;padding-top:15px;padding-bottom:20px}
+ .world-track{gap:48px;padding:0;width:max-content;flex-direction:row}
+ .card-art{height:clamp(140px,23svh,190px)}
+ .card-caption{margin-top:12px}.card-caption h2{font-size:23px}.card-description{font-size:11px;margin-top:10px}
+ .world-bottom{bottom:24px}.world-bottom>span:last-child{display:none}.world-progress{max-width:110px}
+ .world-section .particle-core{width:54px}
+}
+@media(max-height:640px) and (min-width:761px){
+ .world-pin{min-height:480px;padding-top:100px}.world-heading{margin-bottom:8px}
+ .world-window{padding-top:10px;padding-bottom:12px}.card-art{height:145px}
+ .card-caption{margin-top:10px}.card-description{margin-top:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .world-section{height:auto;background:transparent}
+ .world-pin{position:relative;top:auto;height:auto;min-height:0;padding:100px 0 60px;background:transparent}
+ .world-window{width:auto;overflow:visible;margin:20px 7% 0;padding:0;mask-image:none;-webkit-mask-image:none}
+ .world-track{display:grid;grid-template-columns:1fr;width:auto;gap:40px;padding:0;transform:none!important}
+ .world-card{width:100%;max-width:390px;will-change:auto;transform:none!important}
+ .world-counter,.world-bottom{display:none}
+}
+@media(max-width:760px) and (max-height:600px) and (prefers-reduced-motion:no-preference){
+ .world-pin{min-height:0;padding-top:88px;padding-bottom:44px}.world-heading{margin-bottom:8px}
+ .world-window{padding-top:0;padding-bottom:10px}.card-art{height:clamp(75px,22svh,130px)}
+ .card-caption{margin-top:8px}.card-caption h2{font-size:20px}.card-caption p{margin-bottom:6px}
+ .card-description{margin-top:8px;font-size:10px;line-height:1.5}.world-bottom{bottom:16px}
+}

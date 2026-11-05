@@ -32,11 +32,60 @@ quoteForm.addEventListener('submit',async event=>{
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 const world=document.querySelector('.world-section'),track=document.querySelector('.world-track'),pin=document.querySelector('.world-pin'),bridge=document.querySelector('.bridge'),moon=document.querySelector('.moon-world'),meter=document.querySelector('.world-progress i'),counter=document.querySelector('.world-counter');
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const orbitCards=[...track.querySelectorAll('.world-card')];
 let smoothY=window.scrollY,lastTime=0,raf=0,worldTop=0,worldRange=1,travel=0,bridgeTop=0,bridgeRange=1;
-function measure(){worldTop=world.offsetTop;worldRange=Math.max(1,world.offsetHeight-pin.clientHeight);travel=Math.max(0,track.scrollWidth-pin.clientWidth+innerWidth*.07);bridgeTop=bridge.offsetTop;bridgeRange=Math.max(1,bridge.offsetHeight-innerHeight);wake();}
-function wake(){if(!raf)raf=requestAnimationFrame(frame);}
-function frame(time){raf=0;const dt=Math.min(64,time-(lastTime||time-16));lastTime=time;const actual=window.scrollY;const contact=document.getElementById('contact');const factor=reducedMotion.matches?1:1-Math.exp(-dt/85);smoothY+=(actual-smoothY)*factor;if(Math.abs(actual-smoothY)<.15)smoothY=actual;const progress=clamp((smoothY-worldTop)/worldRange),bp=clamp((smoothY-bridgeTop)/bridgeRange);if(!reducedMotion.matches)track.style.transform=`translate3d(${-travel*progress}px,0,0)`;else track.style.transform='';meter.style.transform=`scaleX(${Math.max(.03,progress)})`;counter.textContent=`0${Math.min(3,Math.floor(progress*3)+1)} / 03`;document.documentElement.style.setProperty('--scroll',smoothY);document.documentElement.style.setProperty('--page-progress',actual/Math.max(1,document.documentElement.scrollHeight-innerHeight));document.documentElement.style.setProperty('--hero-progress',clamp(smoothY/innerHeight));bridge.style.setProperty('--bridge',bp);moon.style.opacity=String(1-clamp(smoothY/(innerHeight*.95))*.52);window.dispatchEvent(new CustomEvent('muon:motion',{detail:{scroll:reducedMotion.matches?0:smoothY}}));if(Math.abs(actual-smoothY)>.15)wake();}
-window.addEventListener('scroll',wake,{passive:true});window.addEventListener('resize',measure,{passive:true});window.addEventListener('load',measure);reducedMotion.addEventListener('change',()=>{smoothY=scrollY;measure();});measure();
+let cardOffsets=[];
+function measure(){
+  worldTop=world.offsetTop;
+  worldRange=Math.max(1,world.offsetHeight-pin.clientHeight);
+  // Measure the card centres, not the oversized width of the page.
+  // The final card lands exactly where the first card began.
+  cardOffsets=orbitCards.map(card=>card.offsetLeft-orbitCards[0].offsetLeft);
+  travel=cardOffsets.at(-1)||0;
+  bridgeTop=bridge.offsetTop;
+  bridgeRange=Math.max(1,bridge.offsetHeight-innerHeight);
+  wake();
+}
+function wake(){if(!raf){lastTime=0;raf=requestAnimationFrame(frame);}}
+function frame(time){
+  raf=0;
+  const dt=lastTime?Math.min(64,time-lastTime):16;
+  lastTime=time;
+  const actual=window.scrollY;
+  const factor=reducedMotion.matches?1:1-Math.exp(-dt/110);
+  smoothY+=(actual-smoothY)*factor;
+  if(Math.abs(actual-smoothY)<.1)smoothY=actual;
+  const progress=clamp((smoothY-worldTop)/worldRange);
+  const bp=clamp((smoothY-bridgeTop)/bridgeRange);
+  const x=travel*progress;
+  if(!reducedMotion.matches){
+    track.style.transform=`translate3d(${-x}px,0,0)`;
+    orbitCards.forEach((card,i)=>{
+      const distance=(cardOffsets[i]-x)/Math.max(1,cardOffsets[1]||1);
+      const edge=Math.min(1,Math.abs(distance));
+      card.style.transform=`translate3d(0,${edge*14}px,0) rotate(${clamp(distance,-1,1)*-3}deg) scale(${1-edge*.055})`;
+    });
+  }else{
+    track.style.transform='';
+    orbitCards.forEach(card=>card.style.removeProperty('transform'));
+  }
+  meter.style.transform=`scaleX(${Math.max(.03,progress)})`;
+  counter.textContent=`0${Math.round(progress*2)+1} / 03`;
+  document.documentElement.style.setProperty('--scroll',smoothY);
+  document.documentElement.style.setProperty('--page-progress',actual/Math.max(1,document.documentElement.scrollHeight-innerHeight));
+  document.documentElement.style.setProperty('--hero-progress',clamp(smoothY/innerHeight));
+  bridge.style.setProperty('--bridge',bp);
+  // Keep the lunar surface bright throughout the gallery.
+  moon.style.opacity=String(1-clamp(smoothY/innerHeight)*.1-clamp((smoothY-bridgeTop)/innerHeight)*.42);
+  window.dispatchEvent(new CustomEvent('muon:motion',{detail:{scroll:reducedMotion.matches?0:smoothY}}));
+  if(Math.abs(actual-smoothY)>.1)raf=requestAnimationFrame(frame);
+}
+window.addEventListener('scroll',wake,{passive:true});
+window.addEventListener('resize',measure,{passive:true});
+window.addEventListener('load',measure);
+if(document.fonts)document.fonts.ready.then(measure);
+reducedMotion.addEventListener('change',()=>{smoothY=scrollY;measure();});
+measure();
 const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target);}}),{threshold:.12});
 document.querySelectorAll('.section-heading,.services details,.studio-layout>div:last-child,.steps article,.contact h2,.contact .button,.section-label').forEach((node,i)=>{node.classList.add('reveal');node.style.setProperty('--reveal-delay',`${(i%3)*65}ms`);revealObserver.observe(node);});
 
@@ -59,7 +108,7 @@ document.querySelectorAll('.section-heading,.services details,.studio-layout>div
     if(live.has(cards[0])){
       const angle=phase*.62+scroll*.002;
       sculpture.style.transform=`rotateX(${51+Math.sin(angle)*10}deg) rotateY(${Math.sin(angle*.7)*12}deg) rotateZ(${-22+Math.sin(angle*.8)*32}deg)`;
-      sculpture.querySelectorAll('span').forEach((ring,i)=>ring.style.transform=`translateZ(${i*35+Math.sin(angle-i*.5)*7}px)`);
+      sculpture.querySelectorAll('span').forEach((ring,i)=>ring.style.transform=`translateZ(${i*17+Math.sin(angle-i*.5)*4}px)`);
     }
     if(live.has(cards[1])){
       const angle=phase*.75+scroll*.002;
