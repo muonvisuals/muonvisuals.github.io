@@ -63,7 +63,7 @@ function frame(time){
     orbitCards.forEach((card,i)=>{
       const distance=(cardOffsets[i]-x)/Math.max(1,cardOffsets[1]||1);
       const edge=Math.min(1,Math.abs(distance));
-      card.style.transform=`translate3d(0,${edge*14}px,0) rotate(${clamp(distance,-1,1)*-3}deg) scale(${1-edge*.055})`;
+      card.style.transform=`translate3d(0,${edge*6}px,0) rotate(${clamp(distance,-1,1)*-1}deg) scale(${1-edge*.02})`;
     });
   }else{
     track.style.transform='';
@@ -108,7 +108,7 @@ document.querySelectorAll('.section-heading,.services details,.studio-layout>div
     if(live.has(cards[0])){
       const angle=phase*.62+scroll*.002;
       sculpture.style.transform=`rotateX(${51+Math.sin(angle)*10}deg) rotateY(${Math.sin(angle*.7)*12}deg) rotateZ(${-22+Math.sin(angle*.8)*32}deg)`;
-      sculpture.querySelectorAll('span').forEach((ring,i)=>ring.style.transform=`translateZ(${i*17+Math.sin(angle-i*.5)*4}px)`);
+      sculpture.querySelectorAll('span').forEach((ring,i)=>ring.style.transform=`translateZ(${i*24+Math.sin(angle-i*.5)*5}px)`);
     }
     if(live.has(cards[1])){
       const angle=phase*.75+scroll*.002;

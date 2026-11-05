@@ -123,59 +123,58 @@ html,body{max-width:100%;overflow-x:clip}button,a,input,summary{touch-action:man
 }
 @media(prefers-reduced-motion:reduce){.hero-copy>*{animation:none!important}}
 
-/* Compact orbital gallery. Native vertical scrolling drives one unbroken pass. */
-.world-section{--orbit-card:clamp(270px,29vw,390px);height:180svh;background:transparent}
-.world-pin{height:100svh;min-height:600px;padding:120px 0 80px;display:flex;flex-direction:column;background:linear-gradient(90deg,#080a0c55,transparent 65%)}
-.world-heading{margin:0 7% 24px;flex:none}
-.world-heading .eyebrow{font-size:8px;letter-spacing:1.7px}
-.world-window{width:calc(var(--orbit-card) + 48px);margin:auto 0 auto 7%;padding:24px 0 28px;overflow:hidden;mask-image:linear-gradient(90deg,#000 0%,#000 88%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 88%,transparent 100%)}
-.world-track{display:flex;flex-direction:row;gap:72px;width:max-content;padding:0;will-change:transform}
+
+/* Full-screen gallery with medium panels and one continuous scroll passage. */
+.world-section{--orbit-card:clamp(440px,55vw,820px);height:200svh;background:transparent}
+.world-pin{height:100svh;min-height:600px;padding:120px 0 80px;display:flex;flex-direction:column;background:transparent}
+.world-heading{margin:0 7% 22px;flex:none}.world-heading .eyebrow{font-size:9px;letter-spacing:1.7px}
+.world-window{width:100%;margin:auto 0;padding:16px 0 24px;overflow:hidden;mask-image:none;-webkit-mask-image:none}
+.world-track{display:flex;flex-direction:row;gap:12vw;width:max-content;padding:0 0 0 calc((100vw - var(--orbit-card))/2);will-change:transform}
 .world-card{width:var(--orbit-card);max-width:none;flex:none;transform-origin:50% 50%;will-change:transform}
-.card-art{height:clamp(170px,24svh,245px);min-height:0;max-height:none;border:0;background:transparent;overflow:hidden}
-.design-art,.tech-art,.ai-art{background:transparent}
-.card-caption{margin-top:18px;gap:12px}
-.card-caption h2{font-size:clamp(23px,2.15vw,30px);letter-spacing:-1px;line-height:1.2}
-.card-caption p{font-size:8px;letter-spacing:1.8px;margin-bottom:10px}
-.card-arrow{font-size:23px}.card-description{font-size:11px;max-width:32ch;margin-top:14px;line-height:1.8;color:#b3bbb3}
-.world-bottom{bottom:32px;font-size:7px;letter-spacing:1.4px}.world-progress{max-width:180px}
-.world-bottom>span:last-child{display:block}
-.world-section .sculpture{inset:20% 26%}
-.world-section .sculpture span{border-width:12px}
-.world-section .sculpture span:nth-child(5){border-width:8px}
-.world-section .glass-screen{left:20%;right:20%;top:16%;bottom:18%;padding:10px;border-radius:6px;backdrop-filter:none;box-shadow:3px 4px 0 #1c3154,6px 10px 25px #0005}
-.world-section .screen-bar{padding-bottom:8px}.world-section .screen-layout{padding:6px;height:68%}
-.world-section .screen-lines b{height:3px;margin:8px 0}.world-section .glass-screen>span{font-size:5px;letter-spacing:1.4px}
-.world-section .particle-core{width:66px;box-shadow:0 0 50px #c7ff0014}
-.world-section .particle-ring{width:52%;height:72%}
-.world-section .art-grid,.world-section .particle-dots{opacity:.4}
+.card-art{height:clamp(240px,36svh,390px);min-height:0;max-height:none;border:1px solid #ffffff20;overflow:hidden;background:#080a0c55}
+.design-art{background:radial-gradient(ellipse at 50% 80%,#849c1a22,transparent 60%),#080a0c55}
+.tech-art{background:radial-gradient(ellipse at 60% 30%,#0c46a42a,transparent 65%),#080a0c55}
+.ai-art{background:radial-gradient(ellipse at 50% 50%,#28371855,transparent 65%),#080a0c55}
+.card-caption{margin-top:22px;gap:16px}.card-caption h2{font-size:clamp(28px,2.7vw,38px);letter-spacing:-1.2px;line-height:1.2}
+.card-caption p{font-size:9px;letter-spacing:1.8px;margin-bottom:12px}.card-arrow{font-size:27px}
+.card-description{font-size:12px;max-width:48ch;margin-top:16px;line-height:1.8;color:#b3bbb3}
+.world-bottom{bottom:30px;font-size:8px;letter-spacing:1.4px}.world-progress{max-width:240px}.world-bottom>span:last-child{display:block}
+.world-section .sculpture{inset:18% 28%}.world-section .sculpture span{border-width:18px}.world-section .sculpture span:nth-child(5){border-width:12px}
+.world-section .glass-screen{left:24%;right:24%;top:16%;bottom:18%;padding:16px;border-radius:8px;backdrop-filter:none;box-shadow:4px 6px 0 #1c3154,8px 14px 35px #0005}
+.world-section .screen-bar{padding-bottom:10px}.world-section .screen-layout{padding:10px;height:70%}
+.world-section .screen-lines b{height:4px;margin:12px 0}.world-section .glass-screen>span{font-size:7px;letter-spacing:2px}
+.world-section .particle-core{width:90px;box-shadow:0 0 65px #c7ff001a}.world-section .particle-ring{width:50%;height:72%}
+.world-section .art-grid,.world-section .particle-dots{opacity:.55}
 @media(max-width:760px){
- .world-section{--orbit-card:min(72vw,310px);height:180svh;background:transparent}
+ .world-section{--orbit-card:82vw;height:200svh}
  .world-pin{height:100svh;min-height:560px;padding:104px 0 70px}
  .world-heading{margin:0 7% 16px}.world-heading .eyebrow{font-size:7px;max-width:220px}
  .world-counter{display:block;font-size:9px;white-space:nowrap}
- .world-window{width:86vw;margin:0 0 auto 7%;padding-top:15px;padding-bottom:20px}
- .world-track{gap:48px;padding:0;width:max-content;flex-direction:row}
- .card-art{height:clamp(140px,23svh,190px)}
- .card-caption{margin-top:12px}.card-caption h2{font-size:23px}.card-description{font-size:11px;margin-top:10px}
- .world-bottom{bottom:24px}.world-bottom>span:last-child{display:none}.world-progress{max-width:110px}
- .world-section .particle-core{width:54px}
+ .world-window{width:100%;margin:auto 0;padding:12px 0 20px}
+ .world-track{gap:12vw;padding-left:9vw;width:max-content;flex-direction:row}
+ .card-art{height:clamp(190px,32svh,290px)}
+ .card-caption{margin-top:16px}.card-caption h2{font-size:clamp(24px,6.3vw,30px)}.card-description{font-size:11px;margin-top:12px}
+ .world-bottom{bottom:24px}.world-bottom>span:last-child{display:none}.world-progress{max-width:120px}
+ .world-section .sculpture{inset:22% 25%}.world-section .sculpture span{border-width:14px}
+ .world-section .glass-screen{left:15%;right:15%;padding:12px}.world-section .glass-screen>span{font-size:5px}
+ .world-section .particle-core{width:70px}.world-section .particle-ring{width:62%}
 }
 @media(max-height:640px) and (min-width:761px){
  .world-pin{min-height:480px;padding-top:100px}.world-heading{margin-bottom:8px}
- .world-window{padding-top:10px;padding-bottom:12px}.card-art{height:145px}
- .card-caption{margin-top:10px}.card-description{margin-top:8px}
+ .world-window{padding-top:10px;padding-bottom:12px}.card-art{height:clamp(160px,31svh,220px)}
+ .card-caption{margin-top:12px}.card-caption h2{font-size:28px}.card-description{margin-top:10px}
+}
+@media(max-width:760px) and (max-height:600px) and (prefers-reduced-motion:no-preference){
+ .world-pin{min-height:0;padding-top:88px;padding-bottom:44px}.world-heading{margin-bottom:8px}
+ .world-window{padding-top:0;padding-bottom:10px}.card-art{height:clamp(90px,27svh,160px)}
+ .card-caption{margin-top:10px}.card-caption h2{font-size:22px}.card-caption p{margin-bottom:6px}
+ .card-description{margin-top:8px;font-size:10px;line-height:1.5}.world-bottom{bottom:16px}
 }
 @media(prefers-reduced-motion:reduce){
  .world-section{height:auto;background:transparent}
  .world-pin{position:relative;top:auto;height:auto;min-height:0;padding:100px 0 60px;background:transparent}
- .world-window{width:auto;overflow:visible;margin:20px 7% 0;padding:0;mask-image:none;-webkit-mask-image:none}
+ .world-window{width:auto;overflow:visible;margin:20px 7% 0;padding:0}
  .world-track{display:grid;grid-template-columns:1fr;width:auto;gap:40px;padding:0;transform:none!important}
- .world-card{width:100%;max-width:390px;will-change:auto;transform:none!important}
+ .world-card{width:100%;max-width:820px;margin:auto;will-change:auto;transform:none!important}
  .world-counter,.world-bottom{display:none}
-}
-@media(max-width:760px) and (max-height:600px) and (prefers-reduced-motion:no-preference){
- .world-pin{min-height:0;padding-top:88px;padding-bottom:44px}.world-heading{margin-bottom:8px}
- .world-window{padding-top:0;padding-bottom:10px}.card-art{height:clamp(75px,22svh,130px)}
- .card-caption{margin-top:8px}.card-caption h2{font-size:20px}.card-caption p{margin-bottom:6px}
- .card-description{margin-top:8px;font-size:10px;line-height:1.5}.world-bottom{bottom:16px}
 }
